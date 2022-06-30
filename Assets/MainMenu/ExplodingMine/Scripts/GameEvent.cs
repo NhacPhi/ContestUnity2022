@@ -10,6 +10,7 @@ namespace MiniGames.ExplodingMine
     {
         public static Action CheckAllSquareInGridCanBeActive;
         public static Action GameWon;
+        public static Action GameOver;
     }
 }
 

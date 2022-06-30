@@ -5,6 +5,11 @@ using UnityEngine.SceneManagement;
 
 namespace MiniGames.ExplodingMine
 {
+    enum GameState
+    {
+        WAITING,
+        GUESS
+    }
     public class Game : MonoBehaviour
     {
         public static Game Instance;
@@ -12,6 +17,13 @@ namespace MiniGames.ExplodingMine
         public int gridIndexCurrent;
 
         public GameObject popupGameWon;
+
+        public GameObject popupEndGames;
+        public bool isGameOver;
+
+        public bool isChooseCorrect;
+
+        public bool startGame;
         private void Awake()
         {
             Instance = this;
@@ -20,6 +32,9 @@ namespace MiniGames.ExplodingMine
         void Start()
         {
             gridIndexCurrent = 0;
+            isGameOver = false;
+            isChooseCorrect = true;
+            startGame = false;
         }
 
         // Update is called once per frame
@@ -43,17 +58,17 @@ namespace MiniGames.ExplodingMine
 
         void GameWon()
         {
-            StartCoroutine(WinGameTimeWaitToFishPaht());
+            StartCoroutine(WinGameTimeWaitToFishPaht(popupGameWon));
         }
         public void GameReTry()
         {
             SceneManager.LoadScene("ExplodingMine");
         }
 
-        IEnumerator WinGameTimeWaitToFishPaht()
+        public IEnumerator WinGameTimeWaitToFishPaht(GameObject ob)
         {
-            yield return new WaitForSeconds(2);
-            popupGameWon.gameObject.SetActive(true);
+            yield return new WaitForSeconds(1);
+            ob.gameObject.SetActive(true);
         }
     }
 }

@@ -34,6 +34,9 @@ namespace MiniGames.ExplodingMine
         [SerializeField]
         private PlayerMovement player;
 
+        [SerializeField]
+        private Sprite destinationImage;
+
 
         private int topSquareIndex;
         private int bottomSquareIndex;
@@ -41,11 +44,26 @@ namespace MiniGames.ExplodingMine
 
         [SerializeField]
         private SquareIndicate squareIndicate;
+
+        private List<List<int>> listArray;
+
+        private List<int> listSquarePath;
         // Start is called before the first frame update
         void Start()
         {
             CreateGrid();
-            SetGridSquaresPosition();
+            listArray = new List<List<int>>
+            {
+                new List<int>{0, 4, 5, 6, 10, 14, 15},
+                new List<int>{0, 1, 2, 6, 10, 11, 15},
+                new List<int>{0, 1, 5, 9, 10, 14, 15},
+                new List<int>{0, 4, 8, 9, 10, 11, 15},
+                new List<int>{0, 4, 5, 6, 2, 3, 7, 11, 15}
+            };
+            listSquarePath = listArray[0];
+            StartCoroutine(WaiteToShowPath());
+            //SetGridSquaresPosition();
+
         }
 
         // Update is called once per frame
@@ -66,11 +84,13 @@ namespace MiniGames.ExplodingMine
         private void OnEnable()
         {
             GameEvent.CheckAllSquareInGridCanBeActive += SetGridSquaresPosition;
+            GameEvent.GameOver += CheckGameOver;
         }
 
         private void OnDisable()
         {
             GameEvent.CheckAllSquareInGridCanBeActive -= SetGridSquaresPosition;
+            GameEvent.GameOver -= CheckGameOver;
         }
 
         private void SpawnGridSquare()
@@ -89,7 +109,9 @@ namespace MiniGames.ExplodingMine
                 }
             }
             gridSquares[0].gameObject.GetComponent<GridSquare>().activeImage.gameObject.SetActive(true);
+            //player.listPoint.Add(gridSquares[0].gameObject.GetComponent<Transform>().position);
             //gridSquares[0].gameObject.GetComponent<GridSquare>().canActive = true;
+            gridSquares[gridSquares.Count - 1].gameObject.GetComponent<GridSquare>().destinationImage.gameObject.GetComponent<Image>().sprite = destinationImage;
             gridSquares[gridSquares.Count - 1].gameObject.GetComponent<GridSquare>().SetDestinationImage();
         }
 
@@ -144,7 +166,9 @@ namespace MiniGames.ExplodingMine
             {
                 if(square.gameObject.GetComponent<GridSquare>().squareIndex == Game.Instance.gridIndexCurrent)
                 {
-                    player.SetEndpoint(square.gameObject.GetComponent<Transform>().position);
+                    //player.SetEndpoint(square.gameObject.GetComponent<Transform>().position);
+                    player.listPoint.Add(square.gameObject.GetComponent<Transform>().position);
+                    player.currentPoint++;
                 }
             }
 
@@ -184,7 +208,7 @@ namespace MiniGames.ExplodingMine
                 bottomSquareIndex = squareIndicate.GetSquareIndex(row + 1, col);
                 rightSquareIndex = squareIndicate.GetSquareIndex(row, col);
             }
-            else if(row == 4 && col < 4)
+            else if(row == 4 && col < 3)
             {
                 topSquareIndex = squareIndicate.GetSquareIndex(row - 1, col);
                 bottomSquareIndex = squareIndicate.GetSquareIndex(row, col);
@@ -193,6 +217,36 @@ namespace MiniGames.ExplodingMine
             gridSquares[topSquareIndex].GetComponent<GridSquare>().canActive = true;
             gridSquares[bottomSquareIndex].GetComponent<GridSquare>().canActive = true;
             gridSquares[rightSquareIndex].GetComponent<GridSquare>().canActive = true;
+        } 
+
+        IEnumerator WaiteToShowPath()
+        {
+            yield return new WaitForSeconds(1f);
+            foreach(var index in listArray[0])
+            {
+                gridSquares[index].GetComponent<GridSquare>().preditionImage.gameObject.SetActive(true);
+                yield return new WaitForSeconds(0.5f);
+                gridSquares[index].GetComponent<GridSquare>().preditionImage.gameObject.SetActive(false);
+            }
+            Game.Instance.startGame = true;
+        }
+        void CheckGameOver()
+        {
+            bool isGameOver = true;
+            foreach(int index in listSquarePath)
+            {
+                if(Game.Instance.gridIndexCurrent == index)
+                {
+                    isGameOver = false;
+                }
+            }
+
+            if(isGameOver)
+            {
+                Game.Instance.isChooseCorrect = false;
+                Game.Instance.isGameOver = true;
+                StartCoroutine(Game.Instance.WinGameTimeWaitToFishPaht(Game.Instance.popupEndGames));
+            }
         }
     }
 

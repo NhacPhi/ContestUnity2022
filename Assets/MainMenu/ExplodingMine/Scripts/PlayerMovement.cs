@@ -12,6 +12,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 startPoint;
     private float lastPointSwitchTime;
 
+    public List<Vector2> listPoint;
+
+    public int currentPoint;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +22,10 @@ public class PlayerMovement : MonoBehaviour
         endPoint = transform.position;
        
         lastPointSwitchTime = Time.time;
+
+        listPoint = new List<Vector2>() {transform.position };
+
+        currentPoint = 0;
     }
 
     // Update is called once per frame
@@ -29,23 +36,32 @@ public class PlayerMovement : MonoBehaviour
     }
     void HandleMovement()
     {
-        if(endPoint != startPoint)
+        if(listPoint.Count != 0)
         {
-            float pathLength = Vector3.Distance(startPoint, endPoint);
-            float totalTimeForPath = pathLength / speed;
-            float currentTimeOnPath = Time.time - lastPointSwitchTime;
-            this.GetComponent<RectTransform>().position = Vector2.Lerp(startPoint, endPoint, currentTimeOnPath / totalTimeForPath);
-            if(currentTimeOnPath > totalTimeForPath)
+            endPoint = listPoint[currentPoint];
+            if (endPoint != startPoint)
+            {
+                float pathLength = Vector3.Distance(startPoint, endPoint);
+                float totalTimeForPath = pathLength / speed;
+                float currentTimeOnPath = Time.time - lastPointSwitchTime;
+                this.GetComponent<RectTransform>().position = Vector2.Lerp(startPoint, endPoint, currentTimeOnPath / totalTimeForPath);
+                if (currentTimeOnPath > totalTimeForPath)
+                {
+                    lastPointSwitchTime = Time.time;
+                    startPoint = transform.position;
+                    if (currentPoint < listPoint.Count - 1)
+                    {
+                        currentPoint++;
+                    }
+                }
+            }
+            else
             {
                 lastPointSwitchTime = Time.time;
                 startPoint = transform.position;
             }
         }
-        else
-        {
-            lastPointSwitchTime = Time.time;
-            startPoint = transform.position;
-        }
+       
     }
     void RotateDirection()
     {

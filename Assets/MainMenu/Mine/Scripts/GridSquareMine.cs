@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-namespace MiniGames.ExplodingMine
+namespace MiniGames.Mine
 {
-    public class GridSquare : MonoBehaviour
+    public class GridSquareMine : MonoBehaviour
     {
         public Image normalImage;
 
@@ -15,7 +14,7 @@ namespace MiniGames.ExplodingMine
 
         public Image preditionImage;
 
-        public Image destinationImage;
+        public Image ErrorImage;
 
         public List<Sprite> normalImages;
 
@@ -41,9 +40,10 @@ namespace MiniGames.ExplodingMine
         {
             normalImage.GetComponent<Image>().sprite = setFirstImage ? normalImages[1] : normalImages[0];
         }
+
         private void OnMouseEnter()
         {
-            if(!selected)
+            if (!selected)
             {
                 hooverImage.gameObject.SetActive(true);
                 normalImage.gameObject.SetActive(false);
@@ -51,7 +51,7 @@ namespace MiniGames.ExplodingMine
         }
         private void OnMouseOver()
         {
-            if(!selected)
+            if (!selected)
             {
                 hooverImage.gameObject.SetActive(true);
                 normalImage.gameObject.SetActive(false);
@@ -59,7 +59,7 @@ namespace MiniGames.ExplodingMine
         }
         private void OnMouseExit()
         {
-            if(!selected)
+            if (!selected)
             {
                 hooverImage.gameObject.SetActive(false);
                 normalImage.gameObject.SetActive(true);
@@ -72,39 +72,39 @@ namespace MiniGames.ExplodingMine
             activeImage.gameObject.SetActive(true);
 
             selected = true;
+            canActive = false;
+
+
             //SquareOccupied = true;
         }
-        public void SetDestinationImage()
+        public void ActiveErrorSquare()
         {
             hooverImage.gameObject.SetActive(false);
-            destinationImage.gameObject.SetActive(true);
-        }
-        private void ActiveSquareIncorrect()
-        {
-            hooverImage.gameObject.SetActive(false);
-            destinationImage.gameObject.SetActive(true);
+            ErrorImage.gameObject.SetActive(true);
         }
         private void OnMouseDown()
         {
-            if(!Game.Instance.isGameOver && Game.Instance.startGame)
+            if(GameMine.Instance.isCanSelect)
             {
+                GameMine.Instance.currentIndex = squareIndex;
                 if (!selected && canActive)
                 {
-                    Game.Instance.gridIndexCurrent = squareIndex;
-                    GameEvent.GameOver();
-                    if (Game.Instance.isChooseCorrect)
+                    GameEvetMine.CheckGameOver();
+                    if (GameMine.Instance.isChooseCorrect)
                     {
                         ActiveSquare();
                     }
                     else
                     {
-                        ActiveSquareIncorrect();
+                        ActiveErrorSquare();
                     }
 
                 }
-            }
 
+
+                //Game.Instance.gridIndexCurrent = squareIndex;
+            }
         }
     }
-}
 
+}
