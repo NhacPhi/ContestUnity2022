@@ -48,9 +48,12 @@ namespace MiniGames.ExplodingMine
         private List<List<int>> listArray;
 
         private List<int> listSquarePath;
+
+        int randomNumber;
         // Start is called before the first frame update
         void Start()
         {
+
             CreateGrid();
             listArray = new List<List<int>>
             {
@@ -60,20 +63,23 @@ namespace MiniGames.ExplodingMine
                 new List<int>{0, 4, 8, 9, 10, 11, 15},
                 new List<int>{0, 4, 5, 6, 2, 3, 7, 11, 15}
             };
-            listSquarePath = listArray[0];
+            randomNumber = Random.Range(0, listArray.Count);
+            listSquarePath = listArray[randomNumber];
             StartCoroutine(WaiteToShowPath());
             //SetGridSquaresPosition();
+            //SetEndPointOfPlayer();
+
 
         }
 
         // Update is called once per frame
         void Update()
         {
-            if(Game.Instance.gridIndexCurrent != 0)
-            {
-                SetEndPointOfPlayer();
-            }
-            SetSquareCanActive();
+            //if(Game.Instance.gridIndexCurrent != 0)
+            //{
+            //    SetEndPointOfPlayer();
+            //}
+            //SetSquareCanActive();
         }
         void CreateGrid()
         {
@@ -85,12 +91,16 @@ namespace MiniGames.ExplodingMine
         {
             GameEvent.CheckAllSquareInGridCanBeActive += SetGridSquaresPosition;
             GameEvent.GameOver += CheckGameOver;
+            GameEvent.ChooseSquare += SetEndPointOfPlayer;
+            GameEvent.ChooseSquare += SetSquareCanActive;
         }
 
         private void OnDisable()
         {
             GameEvent.CheckAllSquareInGridCanBeActive -= SetGridSquaresPosition;
             GameEvent.GameOver -= CheckGameOver;
+            GameEvent.ChooseSquare -= SetEndPointOfPlayer;
+            GameEvent.ChooseSquare -= SetSquareCanActive; ;
         }
 
         private void SpawnGridSquare()
@@ -109,8 +119,6 @@ namespace MiniGames.ExplodingMine
                 }
             }
             gridSquares[0].gameObject.GetComponent<GridSquare>().activeImage.gameObject.SetActive(true);
-            //player.listPoint.Add(gridSquares[0].gameObject.GetComponent<Transform>().position);
-            //gridSquares[0].gameObject.GetComponent<GridSquare>().canActive = true;
             gridSquares[gridSquares.Count - 1].gameObject.GetComponent<GridSquare>().destinationImage.gameObject.GetComponent<Image>().sprite = destinationImage;
             gridSquares[gridSquares.Count - 1].gameObject.GetComponent<GridSquare>().SetDestinationImage();
         }
@@ -168,7 +176,7 @@ namespace MiniGames.ExplodingMine
                 {
                     //player.SetEndpoint(square.gameObject.GetComponent<Transform>().position);
                     player.listPoint.Add(square.gameObject.GetComponent<Transform>().position);
-                    player.currentPoint++;
+                    player.nextPoint++;
                 }
             }
 
@@ -179,7 +187,7 @@ namespace MiniGames.ExplodingMine
             {
                 square.GetComponent<GridSquare>().canActive = false;
             }
-                int row = 0;
+            int row = 0;
             int col = 0;
             row = squareIndicate.GetSquarePosition(Game.Instance.gridIndexCurrent).Item1;
             col = squareIndicate.GetSquarePosition(Game.Instance.gridIndexCurrent).Item2;
@@ -217,18 +225,22 @@ namespace MiniGames.ExplodingMine
             gridSquares[topSquareIndex].GetComponent<GridSquare>().canActive = true;
             gridSquares[bottomSquareIndex].GetComponent<GridSquare>().canActive = true;
             gridSquares[rightSquareIndex].GetComponent<GridSquare>().canActive = true;
+
+            player.fishPoint = gridSquares[gridSquares.Count - 1].GetComponent<Transform>().position;
+            Debug.Log("Player fish point: " + player.fishPoint);
         } 
 
         IEnumerator WaiteToShowPath()
         {
             yield return new WaitForSeconds(1f);
-            foreach(var index in listArray[0])
+            foreach(var index in listArray[randomNumber])
             {
                 gridSquares[index].GetComponent<GridSquare>().preditionImage.gameObject.SetActive(true);
                 yield return new WaitForSeconds(0.5f);
                 gridSquares[index].GetComponent<GridSquare>().preditionImage.gameObject.SetActive(false);
             }
             Game.Instance.startGame = true;
+            SetSquareCanActive();
         }
         void CheckGameOver()
         {

@@ -2,82 +2,96 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+namespace MiniGames.ExplodingMine
 {
-
-    [SerializeField]
-    private float speed;
-
-    public Vector2 endPoint;
-    private Vector2 startPoint;
-    private float lastPointSwitchTime;
-
-    public List<Vector2> listPoint;
-
-    public int currentPoint;
-    // Start is called before the first frame update
-    void Start()
+    public class PlayerMovement : MonoBehaviour
     {
-        startPoint = transform.position;
-        endPoint = transform.position;
-       
-        lastPointSwitchTime = Time.time;
 
-        listPoint = new List<Vector2>() {transform.position };
+        [SerializeField]
+        private float speed;
 
-        currentPoint = 0;
-    }
+        public Vector2 endPoint;
+        private Vector2 startPoint;
+        private float lastPointSwitchTime;
 
-    // Update is called once per frame
-    void Update()
-    {
-        HandleMovement();
-        RotateDirection();
-    }
-    void HandleMovement()
-    {
-        if(listPoint.Count != 0)
+        public List<Vector2> listPoint;
+
+        public int currentPoint;
+        public int nextPoint;
+        public Vector2 fishPoint;
+        // Start is called before the first frame update
+        void Start()
         {
-            endPoint = listPoint[currentPoint];
-            if (endPoint != startPoint)
+            startPoint = transform.position;
+            endPoint = transform.position;
+
+            lastPointSwitchTime = Time.time;
+
+            listPoint = new List<Vector2>() { transform.position };
+
+            currentPoint = 0;
+            nextPoint = 0;
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            HandleMovement();
+            RotateDirection();
+            if (listPoint[currentPoint] == fishPoint)
             {
-                float pathLength = Vector3.Distance(startPoint, endPoint);
-                float totalTimeForPath = pathLength / speed;
-                float currentTimeOnPath = Time.time - lastPointSwitchTime;
-                this.GetComponent<RectTransform>().position = Vector2.Lerp(startPoint, endPoint, currentTimeOnPath / totalTimeForPath);
-                if (currentTimeOnPath > totalTimeForPath)
+                GameEvent.GameWon();
+            }
+        }
+        void HandleMovement()
+        {
+            if (listPoint.Count > 0)
+            {
+                if (nextPoint > currentPoint)
+                {
+                    endPoint = listPoint[currentPoint + 1];
+                }
+                if (endPoint != startPoint)
+                {
+                    float pathLength = Vector3.Distance(startPoint, endPoint);
+                    float totalTimeForPath = pathLength / speed;
+                    float currentTimeOnPath = Time.time - lastPointSwitchTime;
+                    this.GetComponent<RectTransform>().position = Vector2.Lerp(startPoint, endPoint, currentTimeOnPath / totalTimeForPath);
+                    if (currentTimeOnPath > totalTimeForPath)
+                    {
+                        lastPointSwitchTime = Time.time;
+                        startPoint = transform.position;
+                        if (currentPoint < listPoint.Count - 1)
+                        {
+                            currentPoint++;
+                        }
+                    }
+                }
+                else
                 {
                     lastPointSwitchTime = Time.time;
                     startPoint = transform.position;
-                    if (currentPoint < listPoint.Count - 1)
-                    {
-                        currentPoint++;
-                    }
                 }
             }
-            else
+
+        }
+        void RotateDirection()
+        {
+            if (endPoint != startPoint)
             {
-                lastPointSwitchTime = Time.time;
-                startPoint = transform.position;
+                Vector3 newDirection = (endPoint - startPoint);
+
+                float x = newDirection.x;
+                float y = newDirection.y;
+                float rotationAngle = Mathf.Atan2(y, x) * 180 / Mathf.PI;
+
+                transform.rotation = Quaternion.AngleAxis(rotationAngle, Vector3.forward);
             }
         }
-       
-    }
-    void RotateDirection()
-    {
-        if (endPoint != startPoint)
+        public void SetEndpoint(Vector2 pos)
         {
-            Vector3 newDirection = (endPoint - startPoint);
-
-            float x = newDirection.x;
-            float y = newDirection.y;
-            float rotationAngle = Mathf.Atan2(y, x) * 180 / Mathf.PI;
-
-            transform.rotation = Quaternion.AngleAxis(rotationAngle, Vector3.forward);
+            endPoint = pos;
         }
     }
-    public void SetEndpoint(Vector2 pos)
-    {
-        endPoint = pos;
-    }
+
 }

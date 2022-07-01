@@ -40,10 +40,7 @@ namespace MiniGames.ExplodingMine
         // Update is called once per frame
         void Update()
         {
-            if (gridIndexCurrent == 15)
-            {
-                GameEvent.GameWon();
-            }
+
         }
 
         private void OnDisable()

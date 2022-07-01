@@ -454,10 +454,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cea94455c6efa214d8ececa95d316756, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 2.5
   endPoint: {x: 0, y: 0}
   listPoint: []
   currentPoint: 0
+  nextPoint: 0
+  fishPoint: {x: 0, y: 0}
 --- !u!1 &1102067298
 GameObject:
   m_ObjectHideFlags: 0

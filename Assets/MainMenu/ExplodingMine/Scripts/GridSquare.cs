@@ -95,6 +95,10 @@ namespace MiniGames.ExplodingMine
                     if (Game.Instance.isChooseCorrect)
                     {
                         ActiveSquare();
+                        if (Game.Instance.gridIndexCurrent != 0)
+                        {
+                            GameEvent.ChooseSquare();
+                        }
                     }
                     else
                     {
