@@ -48,4 +48,19 @@ public class SpawnExPosion : MonoBehaviour
         }
         return null;
     }
+    public bool ExposionCanBePlace(Vector3 pos)
+    {
+        foreach(var ob in listExpostions)
+        {
+            if(ob.activeInHierarchy)
+            {
+               if(Mathf.Abs(Vector3.Distance(pos,ob.gameObject.transform.position)) < 1.8f)
+                {
+                    return false;
+                }
+
+            }
+        }
+        return true;
+    }
 }

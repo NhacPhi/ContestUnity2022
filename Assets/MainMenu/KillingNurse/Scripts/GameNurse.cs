@@ -25,9 +25,13 @@ namespace MiniGames.KillingNurse
             {
                 yield return new WaitForSeconds(0.5f);
                 GameObject ob = SpawnExPosion.Instance.GetPooledExposion();
-                float widthOb = Random.Range(-width, width);
-                float heightOb = Random.Range(-height, height);
-                ob.transform.position = new Vector3(widthOb, heightOb);
+                do
+                {
+                    float widthOb = Random.Range(-width, width);
+                    float heightOb = Random.Range(-height, height);
+                    ob.transform.position = new Vector3(widthOb, heightOb);
+                } while (!SpawnExPosion.Instance.ExposionCanBePlace(ob.transform.position));
+
                 ob.gameObject.SetActive(true);
                 ob.gameObject.GetComponent<ExPosion>().isActive = true;
                 ob.gameObject.GetComponent<CircleCollider2D>().enabled = true;
