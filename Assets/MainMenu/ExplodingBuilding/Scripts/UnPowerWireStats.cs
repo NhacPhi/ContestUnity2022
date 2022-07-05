@@ -8,7 +8,7 @@ public class UnPowerWireStats : MonoBehaviour
     public ColorWire objectColor;
     public GameObject poweredLight;
     public GameObject unpoweredLight;
-    public bool canMove;
+
     // Start is called before the first frame update
     void Start()
     {
