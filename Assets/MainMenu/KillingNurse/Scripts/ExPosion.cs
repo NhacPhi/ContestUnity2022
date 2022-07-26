@@ -17,6 +17,8 @@ namespace MiniGames.KillingNurse
 
         public bool isActive;
 
+        public bool isExploding;
+
         private CircleCollider2D circleCollider;
         // Start is called before the first frame update
         void Start()
@@ -25,11 +27,13 @@ namespace MiniGames.KillingNurse
             circleCollider = GetComponent<CircleCollider2D>();
             currentScale = 1;
             isActive = true;
+            isExploding = false;
         }
 
         // Update is called once per frame
         void Update()
         {
+
             if (isActive)
             {
                 if (currentScale < maxScale)
@@ -42,6 +46,7 @@ namespace MiniGames.KillingNurse
                     animator.SetTrigger("Exposion");
                     circleCollider.enabled = false;
                     isActive = false;
+                    isExploding = true;
                     StartCoroutine(WaiteTimeToVisibleObject());
                     //gameObject.SetActive(false);
                 }
@@ -49,15 +54,6 @@ namespace MiniGames.KillingNurse
 
         }
 
-        //private void OnDisable()
-        //{
-        //    isActive = false;
-        //}
-
-        //private void OnEnable()
-        //{
-        //    isActive = true;
-        //}
 
 
         private void OnMouseDown()
@@ -72,6 +68,7 @@ namespace MiniGames.KillingNurse
             gameObject.SetActive(false);
             gameObject.transform.localScale = new Vector3(1, 1, 1);
             currentScale = 1;
+            //Time.timeScale = 0;
         }
     }
 }

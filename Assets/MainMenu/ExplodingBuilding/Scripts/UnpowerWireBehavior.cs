@@ -28,6 +28,8 @@ public class UnpowerWireBehavior : MonoBehaviour
             if(powerWireS.objectColor == unpowerWireS.objectColor)
             {
                 powerWireS.canMove = false;
+                ExplodingBuilding.Instance.numberWireCorrectly++;
+                Debug.Log("Number: " + ExplodingBuilding.Instance.numberWireCorrectly);
             }
         }
     }

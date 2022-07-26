@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 namespace MiniGames.ExplodingMine
 {
-    enum GameState
+    enum GameStateMine
     {
         WAITING,
         GUESS
@@ -16,14 +16,18 @@ namespace MiniGames.ExplodingMine
 
         public int gridIndexCurrent;
 
-        public GameObject popupGameWon;
-
-        public GameObject popupEndGames;
-        public bool isGameOver;
+        //public bool isGameOver;
 
         public bool isChooseCorrect;
 
-        public bool startGame;
+        //public bool startGame;
+        public GameState currentState;
+        Level level;
+
+        [SerializeField]
+        private ProgressBar progressBar;
+
+        public GameObject mainMenu;
         private void Awake()
         {
             Instance = this;
@@ -32,15 +36,53 @@ namespace MiniGames.ExplodingMine
         void Start()
         {
             gridIndexCurrent = 0;
-            isGameOver = false;
+            //isGameOver = false;
             isChooseCorrect = true;
-            startGame = false;
+            //startGame = false;
+
+            level = Level.EASY;
+
+            currentState = GameState.START;
+
+            mainMenu = GameObject.Find("@MainMenuGame");
         }
 
         // Update is called once per frame
         void Update()
         {
-
+            switch (currentState)
+            {
+                case GameState.START:
+                    {
+                        
+                    }
+                    break;
+                case GameState.INGAME:
+                    {
+                        if (progressBar.isOutTime)
+                        {
+                            currentState = GameState.OUT_TIME;
+                        }
+                    }
+                    break;
+                case GameState.OUT_TIME:
+                    {
+                        mainMenu.GetComponent<MainMenuManager>().DecreaseHealth();
+                        currentState = GameState.GAME_OVER;
+                    }
+                    break;
+                case GameState.GAME_OVER:
+                    {
+                        mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                        currentState = GameState.WAITING;
+                    }
+                    break;
+                case GameState.WAITING:
+                    {
+                       
+                    }
+                    break;
+            }
         }
 
         private void OnDisable()
@@ -55,14 +97,11 @@ namespace MiniGames.ExplodingMine
 
         void GameWon()
         {
-            StartCoroutine(WinGameTimeWaitToFishPaht(popupGameWon));
-        }
-        public void GameReTry()
-        {
-            SceneManager.LoadScene("ExplodingMine");
+            //StartCoroutine(WinGameTimeWaitToFishPaht(popupGameWon));
+            currentState = GameState.GAME_OVER;
         }
 
-        public IEnumerator WinGameTimeWaitToFishPaht(GameObject ob)
+        public IEnumerator WinGameTimeWaitToFishPath(GameObject ob)
         {
             yield return new WaitForSeconds(1);
             ob.gameObject.SetActive(true);

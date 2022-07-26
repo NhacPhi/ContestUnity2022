@@ -86,8 +86,10 @@ namespace MiniGames.ExplodingMine
         }
         private void OnMouseDown()
         {
-            if(!Game.Instance.isGameOver && Game.Instance.startGame)
+            Debug.Log("Mouse Down");
+            if(/*Game.Instance.currentState != GameState.GAME_OVER &&*/ Game.Instance.currentState == GameState.INGAME)
             {
+                Debug.Log("Mouse Down 1");
                 if (!selected && canActive)
                 {
                     Game.Instance.gridIndexCurrent = squareIndex;

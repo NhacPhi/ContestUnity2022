@@ -7,6 +7,8 @@ namespace MiniGames.Mine
     public class GameMine : MonoBehaviour
     {
         public static GameMine Instance;
+
+
         // Start is called before the first frame update
         public List<int> listIndexs;
 
@@ -16,14 +18,20 @@ namespace MiniGames.Mine
 
         public bool isChooseCorrect;
 
-        [SerializeField]
-        private GameObject popupGameOver;
+        public GameState currentState;
+
+        //[SerializeField]
+        //private GameObject popupGameOver;
+
+        //[SerializeField]
+        //private GameObject popupGameWon;
 
         [SerializeField]
-        private GameObject popupGameWon;
+        private ProgressBar progressBar;
 
         public bool isCanSelect;
 
+        private GameObject mainMenu;
         private void Awake()
         {
             Instance = this;
@@ -35,11 +43,46 @@ namespace MiniGames.Mine
             randomList = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
             listIndexs = new List<int>() { 0, 0, 0, 0 };
             SetRandomValueOfListIndex();
+            mainMenu = GameObject.Find("@MainMenuGame");
+            currentState = GameState.START;
         }
 
         // Update is called once per frame
         void Update()
         {
+            switch (currentState)
+            {
+                case GameState.START:
+                    {
+                        currentState = GameState.INGAME;
+                    }
+                    break;
+                case GameState.INGAME:
+                    {
+                        if (progressBar.isOutTime)
+                        {
+                            currentState = GameState.OUT_TIME;
+                        }
+                    }
+                    break;
+                case GameState.OUT_TIME:
+                    {
+                        mainMenu.GetComponent<MainMenuManager>().DecreaseHealth();
+                        currentState = GameState.GAME_OVER;
+                    }
+                    break;
+                case GameState.GAME_OVER:
+                    {
+                        mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                        currentState = GameState.WAITING;
+                    }
+                    break;
+                case GameState.WAITING:
+                    {
+
+                    }
+                    break;
+            }
 
         }
 
@@ -70,7 +113,9 @@ namespace MiniGames.Mine
             {
                 isChooseCorrect = false;
                 isCanSelect = false;
-                StartCoroutine(WaitTimeForEndGame(popupGameOver));
+                //StartCoroutine(WaitTimeForEndGame(popupGameOver));
+                mainMenu.GetComponent<MainMenuManager>().DecreaseHealth();
+                currentState = GameState.GAME_OVER;
             }
 
             if(listIndexs.Count > 0)
@@ -83,21 +128,22 @@ namespace MiniGames.Mine
             if (listIndexs.Count == 0)
             {
                 isCanSelect = false;
-                StartCoroutine(WaitTimeForEndGame(popupGameWon));
+                //StartCoroutine(WaitTimeForEndGame(popupGameWon));
+                currentState = GameState.GAME_OVER;
                 Debug.Log("Win");
             }
 
         }
-        public void GameReTry()
-        {
-            SceneManager.LoadScene("Mine");
-        }
+        //public void GameReTry()
+        //{
+        //    SceneManager.LoadScene("Mine");
+        //}
 
-        IEnumerator WaitTimeForEndGame(GameObject ob)
-        {
-            yield return new WaitForSeconds(1f);
-            ob.gameObject.SetActive(true);
-        }
+        //IEnumerator WaitTimeForEndGame(GameObject ob)
+        //{
+        //    yield return new WaitForSeconds(1f);
+        //    ob.gameObject.SetActive(true);
+        //}
         void SetRandomValueOfListIndex()
         {
             int number = 13;

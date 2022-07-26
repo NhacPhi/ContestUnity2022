@@ -13,11 +13,14 @@ public class Bot : MonoBehaviour
     private float milstoneTime;
     private int indexTime = 0;
     float timingRedMoon = 1;
+
+    bool isLookForPlayer;
     // Start is called before the first frame update
     void Start()
     {
         currentTime = 0;
         milstoneTime = timers[indexTime];
+        isLookForPlayer = false;
     }
 
     // Update is called once per frame
@@ -39,16 +42,29 @@ public class Bot : MonoBehaviour
                 milstoneTime = 100;
             }
         }
+        if(isLookForPlayer)
+        {
+            if(JournalistGame.Instance.currentState == GameState.INGAME)
+            {
+                if (JournalistGame.Instance.player.type == Type.HUMAN)
+                {
+                    JournalistGame.Instance.mainMenu.GetComponent<MainMenuManager>().DecreaseHealth();
+                    JournalistGame.Instance.currentState = GameState.GAME_OVER;
+                }
+            }
+        }
     }
     void LookForPlayer()
     {
         turnBack.gameObject.SetActive(false);
         lookFor.gameObject.SetActive(true);
+        isLookForPlayer = true;
     }
     void TurnBack()
     {
         turnBack.gameObject.SetActive(true);
         lookFor.gameObject.SetActive(false);
+        isLookForPlayer = false;
     }
     void RedMoonTurnOn(float alpha)
     {

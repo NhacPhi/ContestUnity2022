@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Red
   - Ninja
+  - FinishGame
   layers:
   - Default
   - TransparentFX

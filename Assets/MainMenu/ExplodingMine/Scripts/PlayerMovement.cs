@@ -36,12 +36,16 @@ namespace MiniGames.ExplodingMine
         // Update is called once per frame
         void Update()
         {
-            HandleMovement();
-            RotateDirection();
-            if (listPoint[currentPoint] == fishPoint)
+            if(Game.Instance.currentState == GameState.INGAME)
             {
-                GameEvent.GameWon();
+                HandleMovement();
+                RotateDirection();
+                if (listPoint[currentPoint] == fishPoint)
+                {
+                    GameEvent.GameWon();
+                }
             }
+
         }
         void HandleMovement()
         {

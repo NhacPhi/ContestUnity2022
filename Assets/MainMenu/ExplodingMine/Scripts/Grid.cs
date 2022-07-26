@@ -239,7 +239,7 @@ namespace MiniGames.ExplodingMine
                 yield return new WaitForSeconds(0.5f);
                 gridSquares[index].GetComponent<GridSquare>().preditionImage.gameObject.SetActive(false);
             }
-            Game.Instance.startGame = true;
+            Game.Instance.currentState = GameState.INGAME;
             SetSquareCanActive();
         }
         void CheckGameOver()
@@ -256,8 +256,9 @@ namespace MiniGames.ExplodingMine
             if(isGameOver)
             {
                 Game.Instance.isChooseCorrect = false;
-                Game.Instance.isGameOver = true;
-                StartCoroutine(Game.Instance.WinGameTimeWaitToFishPaht(Game.Instance.popupEndGames));
+                Game.Instance.mainMenu.GetComponent<MainMenuManager>().DecreaseHealth();
+                Game.Instance.currentState = GameState.GAME_OVER;
+                //StartCoroutine(Game.Instance.WinGameTimeWaitToFishPaht(Game.Instance.popupEndGames));
             }
         }
     }

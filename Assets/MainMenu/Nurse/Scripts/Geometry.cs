@@ -52,6 +52,7 @@ public class Geometry : MonoBehaviour
         }
         else
         {
+            NurseManager.Instance.number++;
             transform.position = positionCorrectly;
             mouseDown = false;
         }

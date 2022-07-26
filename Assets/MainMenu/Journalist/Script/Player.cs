@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum Type
+{
+    CAT,
+    HUMAN
+}
 public class Player : MonoBehaviour
 {
     public GameObject cat;
@@ -14,6 +19,7 @@ public class Player : MonoBehaviour
     private Animator animatorExplosion;
 
     private bool isRun;
+    public Type type;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,6 +28,7 @@ public class Player : MonoBehaviour
         animatorExplosion = explosion.GetComponent<Animator>();
         isRun = true;
         animatorNinja.SetBool("isRuning", true);
+        type = Type.HUMAN;
     }
 
     // Update is called once per frame
@@ -29,21 +36,28 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            ninja.gameObject.SetActive(false);
-            explosion.gameObject.SetActive(true);
-            animatorExplosion.SetTrigger("Explose");
-            StartCoroutine(TimingToChange(cat));
-            isRun = false;
-            animatorNinja.SetBool("isRuning", false);
+            if(type == Type.HUMAN)
+            {
+                ninja.gameObject.SetActive(false);
+                explosion.gameObject.SetActive(true);
+                animatorExplosion.SetTrigger("Explose");
+                StartCoroutine(TimingToChange(cat));
+                isRun = false;
+                animatorNinja.SetBool("isRuning", false);
+                type = Type.CAT;
+            }
+            else
+            {
+                cat.gameObject.SetActive(false);
+                explosion.gameObject.SetActive(true);
+                animatorExplosion.SetTrigger("Explose");
+                StartCoroutine(TimingToChange(ninja));
+                isRun = true;
+                type = Type.HUMAN;
+            }
+
         }
-        if (Input.GetKeyDown(KeyCode.V))
-        {
-            cat.gameObject.SetActive(false);
-            explosion.gameObject.SetActive(true);
-            animatorExplosion.SetTrigger("Explose");
-            StartCoroutine(TimingToChange(ninja));
-            isRun = true;
-        }
+
         PlayerMovement(); 
     }
 
@@ -63,6 +77,13 @@ public class Player : MonoBehaviour
         {
             // Run forward
             transform.Translate(Vector3.right * Time.deltaTime * speed);
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag == "FinishGame")
+        {
+            JournalistGame.Instance.currentState = GameState.GAME_OVER;
         }
     }
 }
