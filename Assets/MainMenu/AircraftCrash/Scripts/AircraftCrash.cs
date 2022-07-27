@@ -6,7 +6,7 @@ public class AircraftCrash : MonoBehaviour
 {
     public static AircraftCrash Instance { get; set; }
 
-    private GameState currentState;
+    public GameState currentState;
 
     private Level level;
 
@@ -14,6 +14,11 @@ public class AircraftCrash : MonoBehaviour
     private ProgressBar progressBar;
 
     public GameObject mainMenu;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +48,12 @@ public class AircraftCrash : MonoBehaviour
                 }
                 break;
             case GameState.OUT_TIME:
+                {
+                    mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                    currentState = GameState.WAITING;
+                }
+                break;
+            case GameState.GAME_OVER:
                 {
                     mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
                     currentState = GameState.WAITING;

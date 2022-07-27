@@ -7,6 +7,7 @@ TagManager:
   - Red
   - Ninja
   - FinishGame
+  - RedArea
   layers:
   - Default
   - TransparentFX
