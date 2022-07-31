@@ -18,6 +18,7 @@ public enum GameState
     START,
     INGAME,
     OUT_TIME,
+    CUT_SCENE,
     GAME_OVER,
     WAITING
 }

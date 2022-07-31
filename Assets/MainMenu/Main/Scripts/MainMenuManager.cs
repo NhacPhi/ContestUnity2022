@@ -91,7 +91,7 @@ public class MainMenuManager : MonoBehaviour
                     break;
                 default:
                     {
-                        SceneManager.LoadScene(Define.AIR_CRAFT_CRASH);
+                        SceneManager.LoadScene(Define.NURSE);
                     }
                     break;
             }

@@ -5,12 +5,13 @@ using UnityEngine;
 
 public enum TypeShape
 {
-    CIRCLE,
-    SQUARE,
-    RECTANGLE,
-    TRIANGLE,
-    HEXAGON,
-    RHOMBUS
+    MEDICAL_COTTON,
+    SYRINGE,
+    PILL,
+    INFUSION_BOTTLE,
+    PLASTER,
+    THEMOMETR,
+    BANDAGE
 }
 public class Geometry : MonoBehaviour
 {

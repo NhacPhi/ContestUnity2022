@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Video;
 public class NurseManager : MonoBehaviour
 {
     public static NurseManager Instance { set; get; }
@@ -13,10 +13,13 @@ public class NurseManager : MonoBehaviour
     [SerializeField]
     private ProgressBar progressBar;
 
-
-    public int number;
+    [SerializeField]
+    private VideoPlayer cutScene;
+    public int number; 
 
     private GameState currentState;
+
+    bool isWin;
     private void Awake()
     {
         Instance = this;
@@ -28,6 +31,8 @@ public class NurseManager : MonoBehaviour
         mainMenu = GameObject.Find("@MainMenuGame");
 
         number = 0;
+
+        isWin = false;
     }
 
     // Update is called once per frame
@@ -46,9 +51,9 @@ public class NurseManager : MonoBehaviour
                     {
                         currentState = GameState.OUT_TIME;
                     }
-                    if(number == 5)
+                    if(number == 7)
                     {
-                        currentState = GameState.GAME_OVER;
+                        currentState = GameState.CUT_SCENE;
                     }
                 }
                 break;
@@ -59,9 +64,25 @@ public class NurseManager : MonoBehaviour
                     currentState = GameState.GAME_OVER;
                 }
                 break;
+            case GameState.CUT_SCENE:
+                {
+                    cutScene.gameObject.SetActive(true);
+                    progressBar.gameObject.SetActive(false);
+                    cutScene.Play();
+                    isWin = true;
+                    currentState = GameState.GAME_OVER;
+                }
+                break;
             case GameState.GAME_OVER:
                 {
-                    mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                    if(isWin)
+                    {
+                        StartCoroutine(TimingToShowPopUp(5));
+                    }
+                    else
+                    {
+                        StartCoroutine(TimingToShowPopUp(0));
+                    }
                     currentState = GameState.WAITING;
                 }
                 break;
@@ -72,5 +93,11 @@ public class NurseManager : MonoBehaviour
                 break;
         }    
 
+    }
+    IEnumerator TimingToShowPopUp(float time)
+    {
+        yield return new WaitForSeconds(time);
+        mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+        Debug.Log("ShowPopUp");
     }
 }
