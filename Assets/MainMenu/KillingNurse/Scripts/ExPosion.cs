@@ -38,7 +38,7 @@ namespace MiniGames.KillingNurse
             {
                 if (currentScale < maxScale)
                 {
-                    transform.localScale += new Vector3(1, 1, 1) * speedScale;
+                    transform.localScale += new Vector3(1, 1, 1) * speedScale*60*Time.deltaTime;
                     currentScale = transform.localScale.x;
                 }
                 else

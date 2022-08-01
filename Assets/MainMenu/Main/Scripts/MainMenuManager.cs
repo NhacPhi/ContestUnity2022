@@ -48,6 +48,7 @@ public class MainMenuManager : MonoBehaviour
     }
     public void PlayGame()
     {
+        Time.timeScale = 1;
         if(GameManager.Instance.currentState != GameState.GAME_OVER)
         {
             popupHealth.gameObject.SetActive(false);
@@ -91,7 +92,7 @@ public class MainMenuManager : MonoBehaviour
                     break;
                 default:
                     {
-                        SceneManager.LoadScene(Define.NURSE);
+                        SceneManager.LoadScene(Define.EXPLODING_MINE);
                     }
                     break;
             }
