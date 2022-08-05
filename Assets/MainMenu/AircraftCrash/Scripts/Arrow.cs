@@ -25,6 +25,7 @@ public class Arrow : MonoBehaviour
             if (AircraftCrash.Instance.currentState == GameState.INGAME)
             {
                 AircraftCrash.Instance.mainMenu.GetComponent<MainMenuManager>().DecreaseHealth();
+               //Time.timeScale = 0;
                 AircraftCrash.Instance.currentState = GameState.GAME_OVER;
             }
         }

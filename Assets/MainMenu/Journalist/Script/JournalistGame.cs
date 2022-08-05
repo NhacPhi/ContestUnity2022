@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class JournalistGame : MonoBehaviour
 {
@@ -20,6 +21,18 @@ public class JournalistGame : MonoBehaviour
 
     private Level level;
 
+    [SerializeField]
+    private VideoPlayer cutScene;
+
+
+    public bool isWin;
+
+
+    [SerializeField]
+    private GameObject tutorial;
+
+    [SerializeField]
+    private Canvas UI;
 
     private void Awake()
     {
@@ -32,6 +45,7 @@ public class JournalistGame : MonoBehaviour
         currentState = GameState.START;
         mainMenu = GameObject.Find("@MainMenuGame");
         level = Level.EASY;
+        StartCoroutine(TimingToStartGame(1.5f));
     }
 
     // Update is called once per frame
@@ -41,7 +55,8 @@ public class JournalistGame : MonoBehaviour
         {
             case GameState.START:
                 {
-                    currentState = GameState.INGAME;
+
+                    //currentState = GameState.INGAME;
                 }
                 break;
             case GameState.INGAME:
@@ -58,10 +73,27 @@ public class JournalistGame : MonoBehaviour
                     currentState = GameState.GAME_OVER;
                 }
                 break;
+            case GameState.CUT_SCENE:
+                {
+                    cutScene.gameObject.SetActive(true);
+                    progressBar.gameObject.SetActive(false);
+                    cutScene.Play();
+                    isWin = true;
+                    currentState = GameState.GAME_OVER;
+                }
+                break;
             case GameState.GAME_OVER:
                 {
                     Debug.Log("Game Over");
-                    mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                    //mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                    if (isWin)
+                    {
+                        StartCoroutine(TimingToShowPopUp(5));
+                    }
+                    else
+                    {
+                        StartCoroutine(TimingToShowPopUp(0));
+                    }
                     currentState = GameState.WAITING;
                 }
                 break;
@@ -72,5 +104,18 @@ public class JournalistGame : MonoBehaviour
                 break;
         }
 
+    }
+    IEnumerator TimingToShowPopUp(float time)
+    {
+        yield return new WaitForSeconds(time);
+        mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+        Debug.Log("ShowPopUp");
+    }
+    IEnumerator TimingToStartGame(float time)
+    {
+        yield return new WaitForSeconds(time);
+        tutorial.SetActive(false);
+        UI.gameObject.SetActive(true);
+    currentState = GameState.INGAME;
     }
 }

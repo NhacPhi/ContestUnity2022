@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
+
 namespace MiniGames.Mine
 {
     public class GameMine : MonoBehaviour
@@ -20,18 +22,27 @@ namespace MiniGames.Mine
 
         public GameState currentState;
 
-        //[SerializeField]
-        //private GameObject popupGameOver;
-
-        //[SerializeField]
-        //private GameObject popupGameWon;
-
         [SerializeField]
         private ProgressBar progressBar;
 
         public bool isCanSelect;
 
         private GameObject mainMenu;
+
+        [SerializeField]
+        private VideoPlayer cutScene;
+
+
+        public bool isWin;
+
+        [SerializeField]
+        private GameObject tutorial;
+
+        [SerializeField]
+        private int numberSquare;
+
+        //[SerializeField]
+        //private Canvas UI;
         private void Awake()
         {
             Instance = this;
@@ -41,10 +52,12 @@ namespace MiniGames.Mine
             isChooseCorrect = true;
             isCanSelect = true;
             randomList = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
-            listIndexs = new List<int>() { 0, 0, 0, 0 };
+            listIndexs = new List<int>() { 0, 0, 0, 0 , 0};
             SetRandomValueOfListIndex();
             mainMenu = GameObject.Find("@MainMenuGame");
             currentState = GameState.START;
+            isWin = false;
+            StartCoroutine(TimingToStartGame(1.5f));
         }
 
         // Update is called once per frame
@@ -54,7 +67,7 @@ namespace MiniGames.Mine
             {
                 case GameState.START:
                     {
-                        currentState = GameState.INGAME;
+                        //currentState = GameState.INGAME;
                     }
                     break;
                 case GameState.INGAME:
@@ -65,15 +78,34 @@ namespace MiniGames.Mine
                         }
                     }
                     break;
+
                 case GameState.OUT_TIME:
                     {
                         mainMenu.GetComponent<MainMenuManager>().DecreaseHealth();
                         currentState = GameState.GAME_OVER;
                     }
                     break;
+
+                case GameState.CUT_SCENE:
+                    {
+                        cutScene.gameObject.SetActive(true);
+                        progressBar.gameObject.SetActive(false);
+                        cutScene.Play();
+                        isWin = true;
+                        currentState = GameState.GAME_OVER;
+                    }
+                    break;
                 case GameState.GAME_OVER:
                     {
-                        mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                       // mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                        if (isWin)
+                        {
+                            StartCoroutine(TimingToShowPopUp(5));
+                        }
+                        else
+                        {
+                            StartCoroutine(TimingToShowPopUp(0));
+                        }
                         currentState = GameState.WAITING;
                     }
                     break;
@@ -116,6 +148,7 @@ namespace MiniGames.Mine
                 //StartCoroutine(WaitTimeForEndGame(popupGameOver));
                 mainMenu.GetComponent<MainMenuManager>().DecreaseHealth();
                 currentState = GameState.GAME_OVER;
+                
             }
 
             if(listIndexs.Count > 0)
@@ -129,31 +162,36 @@ namespace MiniGames.Mine
             {
                 isCanSelect = false;
                 //StartCoroutine(WaitTimeForEndGame(popupGameWon));
-                currentState = GameState.GAME_OVER;
+                currentState = GameState.CUT_SCENE;
                 Debug.Log("Win");
             }
 
         }
-        //public void GameReTry()
-        //{
-        //    SceneManager.LoadScene("Mine");
-        //}
 
-        //IEnumerator WaitTimeForEndGame(GameObject ob)
-        //{
-        //    yield return new WaitForSeconds(1f);
-        //    ob.gameObject.SetActive(true);
-        //}
         void SetRandomValueOfListIndex()
         {
             int number = 13;
-            for(int i = 0; i < 4; i++)
+            for(int i = 0; i < numberSquare; i++)
             {
                 int valueIndex = Random.Range(0, number);
                 listIndexs[i] = randomList[valueIndex];
                 randomList.Remove(randomList[valueIndex]);
                 number--;
             }
+        }
+
+        IEnumerator TimingToShowPopUp(float time)
+        {
+            yield return new WaitForSeconds(time);
+            mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+            Debug.Log("ShowPopUp");
+        }
+        IEnumerator TimingToStartGame(float time)
+        {
+            yield return new WaitForSeconds(time);
+            tutorial.SetActive(false);
+            //UI.gameObject.SetActive(true);
+            currentState = GameState.INGAME;
         }
     }
 }

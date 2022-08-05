@@ -6,6 +6,9 @@ public class NurseManager : MonoBehaviour
 {
     public static NurseManager Instance { set; get; }
 
+    public List<GameObject> shapes;
+
+    public List<Transform> points;
 
     // Start is called before the first frame update
     private GameObject mainMenu;
@@ -15,11 +18,19 @@ public class NurseManager : MonoBehaviour
 
     [SerializeField]
     private VideoPlayer cutScene;
-    public int number; 
+    public int number;
+
+    private List<int> numbers = new List<int> () { 0, 1, 2, 3, 4, 5, 6 };
 
     private GameState currentState;
 
     bool isWin;
+
+    [SerializeField]
+    private GameObject tutorial;
+
+    [SerializeField]
+    private Canvas UI;
     private void Awake()
     {
         Instance = this;
@@ -33,6 +44,16 @@ public class NurseManager : MonoBehaviour
         number = 0;
 
         isWin = false;
+
+        for(int i = 0; i < 3 ; i++)
+        {
+            int index = Random.Range(0, numbers.Count);
+            GameObject ob = Instantiate(shapes[index], points[i].position, Quaternion.identity);
+            shapes.RemoveAt(index);
+            numbers.RemoveAt(index);
+        }
+
+        StartCoroutine(TimingToStartGame(1.5f));
     }
 
     // Update is called once per frame
@@ -42,7 +63,7 @@ public class NurseManager : MonoBehaviour
         {
             case GameState.START:
                 {
-                    currentState = GameState.INGAME;
+                    //currentState = GameState.INGAME;
                 }
                 break;
             case GameState.INGAME:
@@ -51,7 +72,7 @@ public class NurseManager : MonoBehaviour
                     {
                         currentState = GameState.OUT_TIME;
                     }
-                    if(number == 7)
+                    if(number == 3)
                     {
                         currentState = GameState.CUT_SCENE;
                     }
@@ -99,5 +120,12 @@ public class NurseManager : MonoBehaviour
         yield return new WaitForSeconds(time);
         mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
         Debug.Log("ShowPopUp");
+    }
+    IEnumerator TimingToStartGame(float time)
+    {
+        yield return new WaitForSeconds(time);
+        tutorial.SetActive(false);
+        UI.gameObject.SetActive(true);
+        currentState = GameState.INGAME;
     }
 }

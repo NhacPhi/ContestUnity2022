@@ -18,11 +18,16 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     GameObject healthManger;
 
+    [SerializeField]
+    private PopupEndFGame popup;
+
+    public bool isWin;
     private void Awake()
     {
         Instance = this;
         level = Level.EASY;
         DontDestroyOnLoad(this.gameObject);
+        isWin = false;
     }
     
     // Start is called before the first frame update
@@ -39,21 +44,35 @@ public class GameManager : MonoBehaviour
         {
             case GameState.START:
                 {
-
+                    currentState = GameState.INGAME;
                 }
                 break;
             case GameState.INGAME:
                 {
-
+                    //currentState = GameState.INGAME;
                 }
                 break;
             case GameState.GAME_OVER:
                 {
-                    
+                    if(isWin)
+                    {
+                        currentState = GameState.CUT_SCENE;
+                    }
+                    else
+                    {
+                        currentState = GameState.WAITING;
+                    }
+                }
+                break;
+            case GameState.CUT_SCENE:
+                {
+                    popup.ShopPopupWinGame();
+                    currentState = GameState.INGAME;
                 }
                 break;
             case GameState.WAITING:
                 {
+                    
                     Destroy(mainMenu);
                     Destroy(healthManger);
                     Destroy(this.gameObject);

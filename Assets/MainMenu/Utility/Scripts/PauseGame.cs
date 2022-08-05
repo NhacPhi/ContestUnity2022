@@ -7,6 +7,9 @@ public class PauseGame : MonoBehaviour
     [SerializeField]
     private Canvas popupPauseGame;
 
+    [SerializeField]
+    private GameObject imgPlay;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,11 +26,13 @@ public class PauseGame : MonoBehaviour
     {
         popupPauseGame.gameObject.SetActive(true);
         Time.timeScale = 0;
+        imgPlay.SetActive(true);
     }
     public void HidePauseGame()
     {
         popupPauseGame.gameObject.SetActive(false);
         Time.timeScale = 1;
+        imgPlay.SetActive(false);
     }
     public void ShowGameMenu()
     {

@@ -36,12 +36,15 @@ public class Geometry : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //MoveGeometry();
+    }
+    void LateUpdate()
+    {
         MoveGeometry();
     }
-
     private void OnMouseExit()
     {
-        moveable = false;
+        //moveable = false;
     }
 
     private void OnMouseUp()

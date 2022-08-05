@@ -9,7 +9,7 @@ public class Define
     public static string KILLING_NURSE = "KillingNurse";
     public static string JOURNALIST = "Journalist";
     public static string EXPLODING_MINE = "ExplodingMine";
-    public static string EXPLODING_BUILDING = "ExplodingBuilding";
+    //public static string EXPLODING_BUILDING = "ExplodingBuilding";
     public static string AIR_CRAFT_CRASH = "AircraftCrash";
     public static string MAIN_MENU = "MainMenu";
 }

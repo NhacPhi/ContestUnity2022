@@ -7,6 +7,8 @@ public class TipGame : MonoBehaviour
     [SerializeField]
     private Canvas popUpShowTip;
 
+    [SerializeField]
+    private TipContet tipContent;
 
     public void ShowTipGame()
     {
@@ -15,5 +17,6 @@ public class TipGame : MonoBehaviour
     public void ExitTip()
     {
         popUpShowTip.gameObject.SetActive(false);
+        //tipContent.ResetContent();
     }
 }

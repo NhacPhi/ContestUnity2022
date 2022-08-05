@@ -32,7 +32,7 @@ public class MainMenuManager : MonoBehaviour
     void Start()
     {
         miniGames = new List<MiniGame>() { MiniGame.AIR_CRAFT_CRASH ,
-        MiniGame.EXPLODING_BUILDING,
+        //MiniGame.EXPLODING_BUILDING,
         MiniGame.EXPLODING_MINE,
         MiniGame.JOURNALIST,
         MiniGame.KILLING_NURSE,
@@ -52,77 +52,80 @@ public class MainMenuManager : MonoBehaviour
         if(GameManager.Instance.currentState != GameState.GAME_OVER)
         {
             popupHealth.gameObject.SetActive(false);
-            currentMiniGame = RandomMiniGame();
-            switch (currentMiniGame)
-            {
-                case MiniGame.AIR_CRAFT_CRASH:
-                    {
-                        SceneManager.LoadScene(Define.AIR_CRAFT_CRASH);
-                    }
-                    break;
-                case MiniGame.EXPLODING_BUILDING:
-                    {
-                        SceneManager.LoadScene(Define.EXPLODING_BUILDING);
-                    }
-                    break;
-                case MiniGame.EXPLODING_MINE:
-                    {
-                        SceneManager.LoadScene(Define.EXPLODING_MINE);
-                    }
-                    break;
-                case MiniGame.JOURNALIST:
-                    {
-                        SceneManager.LoadScene(Define.JOURNALIST);
-                    }
-                    break;
-                case MiniGame.NURSE:
-                    {
-                        SceneManager.LoadScene(Define.NURSE);
-                    }
-                    break;
-                case MiniGame.KILLING_NURSE:
-                    {
-                        SceneManager.LoadScene(Define.KILLING_NURSE);
-                    }
-                    break;
-                case MiniGame.MINE:
-                    {
-                        SceneManager.LoadScene(Define.MINE);
-                    }
-                    break;
-                default:
-                    {
-                        SceneManager.LoadScene(Define.EXPLODING_MINE);
-                    }
-                    break;
+            RandomMiniGame(); 
+                switch (currentMiniGame)
+                {
+                    case MiniGame.AIR_CRAFT_CRASH:
+                        {
+                            SceneManager.LoadScene(Define.AIR_CRAFT_CRASH);
+                        }
+                        break;
+                    case MiniGame.EXPLODING_MINE:
+                        {
+                            SceneManager.LoadScene(Define.EXPLODING_MINE);
+                        }
+                        break;
+                    case MiniGame.JOURNALIST:
+                        {
+                            SceneManager.LoadScene(Define.JOURNALIST);
+                        }
+                        break;
+                    case MiniGame.NURSE:
+                        {
+                            SceneManager.LoadScene(Define.NURSE);
+                        }
+                        break;
+                    case MiniGame.KILLING_NURSE:
+                        {
+                            SceneManager.LoadScene(Define.KILLING_NURSE);
+                        }
+                        break;
+                    case MiniGame.MINE:
+                        {
+                            SceneManager.LoadScene(Define.MINE);
+                        }
+                        break;
+                        //default:
+                        //    {
+                        //        SceneManager.LoadScene(Define.AIR_CRAFT_CRASH);
+                        //    }
+                        //break;
+                }
             }
-        }
+            
        else if(GameManager.Instance.currentState == GameState.GAME_OVER)
         {
-            SceneManager.LoadScene(Define.MAIN_MENU);
-            GameManager.Instance.currentState = GameState.WAITING;
+            if(!GameManager.Instance.isWin)
+            {
+                SceneManager.LoadScene(Define.MAIN_MENU);
+                GameManager.Instance.currentState = GameState.WAITING;
+            }
+
         }
 
     }
-    MiniGame RandomMiniGame()
+    void RandomMiniGame()
     {
         if(miniGames.Count == 0)
         {
-            miniGames = new List<MiniGame>() { MiniGame.AIR_CRAFT_CRASH ,
-            MiniGame.EXPLODING_BUILDING,
-            MiniGame.EXPLODING_MINE,
-            MiniGame.JOURNALIST,
-            MiniGame.KILLING_NURSE,
-            MiniGame.NURSE,
-            MiniGame.MINE
-        };
+            //miniGames = new List<MiniGame>() { MiniGame.AIR_CRAFT_CRASH ,
+            //MiniGame.EXPLODING_BUILDING,
+            //MiniGame.EXPLODING_MINE,
+            //MiniGame.JOURNALIST,
+            //MiniGame.KILLING_NURSE,
+            //MiniGame.NURSE,
+            //MiniGame.MINE
+            GameManager.Instance.isWin = true;
+            GameManager.Instance.currentState = GameState.CUT_SCENE;
+            return ;
         }
         MiniGame miniGame = 0;
         int numberIndex = Random.Range(0, miniGames.Count);
         miniGame = miniGames[numberIndex];
+        currentMiniGame = miniGame;
         miniGames.RemoveAt(numberIndex);
         Debug.Log("MiniGames: " + miniGames);
-        return miniGame;
+        //scurrentMiniGame = miniGame;
     }
 
     public void ShowPopupHealth()
@@ -137,5 +140,7 @@ public class MainMenuManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         popupHealth.SetActive(true);
+        yield return new WaitForSeconds(4);
+        PlayGame();
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class AircraftCrash : MonoBehaviour
 {
@@ -15,6 +16,19 @@ public class AircraftCrash : MonoBehaviour
 
     public GameObject mainMenu;
 
+    [SerializeField]
+    private VideoPlayer cutScene;
+
+    [SerializeField]
+    private GameObject bgEndGame;
+
+    bool isWin;
+
+    [SerializeField]
+    private GameObject tutorialGame;
+
+    [SerializeField]
+    private Canvas UI;
     private void Awake()
     {
         Instance = this;
@@ -26,7 +40,11 @@ public class AircraftCrash : MonoBehaviour
 
         mainMenu = GameObject.Find("@MainMenuGame");
 
-        currentState = GameState.START;
+        //currentState = GameState.START;
+
+        isWin = false;
+
+        StartCoroutine(TimingToStartGame(1.5f));
     }
 
     // Update is called once per frame
@@ -36,7 +54,7 @@ public class AircraftCrash : MonoBehaviour
         {
             case GameState.START:
                 {
-                    currentState = GameState.INGAME;
+                    //currentState = GameState.INGAME;
                 }
                 break;
             case GameState.INGAME:
@@ -47,15 +65,32 @@ public class AircraftCrash : MonoBehaviour
                     }
                 }
                 break;
+            case GameState.CUT_SCENE:
+                {
+                    cutScene.gameObject.SetActive(true);
+                    progressBar.gameObject.SetActive(false);
+                    cutScene.Play();
+                    isWin = true;
+                    currentState = GameState.GAME_OVER;
+                }
+                break;
             case GameState.OUT_TIME:
                 {
-                    mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
-                    currentState = GameState.WAITING;
+                    //mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                    currentState = GameState.CUT_SCENE;
                 }
                 break;
             case GameState.GAME_OVER:
                 {
-                    mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                    //mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                    if (isWin)
+                    {
+                        StartCoroutine(TimingToShowPopUp(5));
+                    }
+                    else
+                    {
+                        StartCoroutine(TimingToShowPopUp(0));
+                    }
                     currentState = GameState.WAITING;
                 }
                 break;
@@ -65,5 +100,20 @@ public class AircraftCrash : MonoBehaviour
                 }
                 break;
         }
+    }
+    IEnumerator TimingToShowPopUp(float time)
+    {
+        yield return new WaitForSeconds(time);
+        UI.gameObject.SetActive(false);
+        mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+        Debug.Log("ShowPopUp");
+        bgEndGame.SetActive(true);
+    }
+    IEnumerator TimingToStartGame(float time)
+    {
+        yield return new WaitForSeconds(time);
+        tutorialGame.SetActive(false);
+        UI.gameObject.SetActive(true);
+        currentState = GameState.INGAME;
     }
 }

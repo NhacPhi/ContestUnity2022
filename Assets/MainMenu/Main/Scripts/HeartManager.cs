@@ -32,7 +32,7 @@ public class HeartManager : MonoBehaviour
     }
     public void DescreaseHeart()
     {
-        healths[currentHeart].GetComponent<Health>().DeActiveImage();
+        healths[currentHeart].GetComponent<Health>().currentState = HearthState.DIEING;
         currentHeart--;
     }
 }

@@ -11,7 +11,7 @@ namespace MiniGames.KillingNurse
 
         private Animator animator;
 
-        private float maxScale = 8;
+        private float maxScale = 0.5f;
 
         private float currentScale;
 
@@ -25,7 +25,7 @@ namespace MiniGames.KillingNurse
         {
             animator = GetComponent<Animator>();
             circleCollider = GetComponent<CircleCollider2D>();
-            currentScale = 1;
+            currentScale = 0.2f;
             isActive = true;
             isExploding = false;
         }
@@ -43,10 +43,11 @@ namespace MiniGames.KillingNurse
                 }
                 else
                 {
-                    animator.SetTrigger("Exposion");
+                    animator.SetTrigger("Exploding");
                     circleCollider.enabled = false;
                     isActive = false;
                     isExploding = true;
+                    Debug.Log("Exploding");
                     StartCoroutine(WaiteTimeToVisibleObject());
                     //gameObject.SetActive(false);
                 }
@@ -59,15 +60,16 @@ namespace MiniGames.KillingNurse
         private void OnMouseDown()
         {
             gameObject.SetActive(false);
-            gameObject.transform.localScale = new Vector3(1, 1, 1);
-            currentScale = 1;
+            gameObject.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+            currentScale = 0.2f;
         }
         IEnumerator WaiteTimeToVisibleObject()
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1.5f);
             gameObject.SetActive(false);
-            gameObject.transform.localScale = new Vector3(1, 1, 1);
-            currentScale = 1;
+            gameObject.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+            currentScale = 0.2f;
+            animator.SetTrigger("Restart");
             //Time.timeScale = 0;
         }
     }

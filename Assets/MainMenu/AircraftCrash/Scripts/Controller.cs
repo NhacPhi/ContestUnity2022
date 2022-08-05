@@ -35,70 +35,78 @@ public class Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        switch(currentState)
+        if(AircraftCrash.Instance.currentState == GameState.INGAME)
         {
-            case State.WAIT:
+            if (AircraftCrash.Instance.currentState == GameState.INGAME)
+            {
+                switch (currentState)
                 {
-                    timingRotate = 0;
-                    waittime += Time.deltaTime;
-                    if(waittime > 0.1)
-                    {
-                        int index =  Random.Range(0, 10);
-                        if(index > 4)
+                    case State.WAIT:
                         {
-                            currentState = State.ROTATE_RIGHT;
+                            timingRotate = 0;
+                            waittime += Time.deltaTime;
+                            if (waittime > 0.1)
+                            {
+                                int index = Random.Range(0, 10);
+                                if (index > 4)
+                                {
+                                    currentState = State.ROTATE_RIGHT;
+                                }
+                                else
+                                {
+                                    currentState = State.ROTATE_LEFT;
+                                }
+                            }
                         }
-                        else
+                        break;
+                    case State.ROTATE_LEFT:
                         {
-                            currentState = State.ROTATE_LEFT;
+                            waittime = 0;
+                            timingRotate += Time.deltaTime;
+                            if (timingRotate < 3)
+                            {
+                                RotateController(turnSpeedControll / 2);
+                                direction.gameObject.transform.Rotate(Vector3.forward, turnSpeed / 2 * Time.deltaTime);
+                            }
+                            else
+                            {
+                                currentState = State.WAIT;
+                            }
+
                         }
-                    }
-                }
-                break;
-            case State.ROTATE_LEFT:
-                {
-                    waittime = 0;
-                    timingRotate += Time.deltaTime;
-                    if(timingRotate < 3)
-                    {
-                        RotateController(turnSpeedControll/2);
-                        direction.gameObject.transform.Rotate(Vector3.forward, turnSpeed/2 * Time.deltaTime);
-                    }
-                    else
-                    {
-                        currentState = State.WAIT;
-                    }
+                        break;
+                    case State.ROTATE_RIGHT:
+                        {
+                            waittime = 0;
+                            timingRotate += Time.deltaTime;
+                            if (timingRotate < 3)
+                            {
+                                RotateController(-turnSpeedControll / 2);
+                                direction.gameObject.transform.Rotate(Vector3.forward, -turnSpeed / 2 * Time.deltaTime);
+                            }
+                            else
+                            {
+                                currentState = State.WAIT;
+                            }
 
+                        }
+                        break;
                 }
-                break;
-            case State.ROTATE_RIGHT:
-                {
-                    waittime = 0;
-                    timingRotate += Time.deltaTime;
-                    if (timingRotate < 3)
-                    {
-                        RotateController(-turnSpeedControll / 2);
-                        direction.gameObject.transform.Rotate(Vector3.forward, -turnSpeed / 2 * Time.deltaTime);
-                    }
-                    else
-                    {
-                        currentState = State.WAIT;
-                    }
+            }
 
-                }
-                break;
+
+            if (Input.GetKey(KeyCode.A))
+            {
+                RotateController(turnSpeedControll);
+                direction.gameObject.transform.Rotate(Vector3.forward, turnSpeed * Time.deltaTime);
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                RotateController(-turnSpeedControll);
+                direction.gameObject.transform.Rotate(Vector3.forward, -turnSpeed * Time.deltaTime);
+            }
+
         }
-        if(Input.GetKey(KeyCode.A))
-        {
-            RotateController(turnSpeedControll);
-            direction.gameObject.transform.Rotate(Vector3.forward, turnSpeed * Time.deltaTime);
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            RotateController(-turnSpeedControll);
-            direction.gameObject.transform.Rotate(Vector3.forward, -turnSpeed * Time.deltaTime);
-        }
-        
     }
     void RotateController(float turnSpeed)
     {

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Video;
 namespace MiniGames.KillingNurse
 {
     public class GameNurse : MonoBehaviour
@@ -17,6 +17,18 @@ namespace MiniGames.KillingNurse
         private GameObject mainMenu;
         [SerializeField]
         private ProgressBar progressBar;
+
+        [SerializeField]
+        private VideoPlayer cutScene;
+
+        [SerializeField]
+        private GameObject tutorial;
+
+        [SerializeField]
+        private Canvas UI;
+
+        public bool isWin;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -25,6 +37,7 @@ namespace MiniGames.KillingNurse
             Time.timeScale = 1;
             mainMenu = GameObject.Find("@MainMenuGame");
             StartCoroutine(WaitTimeToSpawnExposion());
+            StartCoroutine(TimingToStartGame(1.5f));
         }
 
         // Update is called once per frame
@@ -34,7 +47,7 @@ namespace MiniGames.KillingNurse
             {
                 case GameState.START:
                     {
-                        currentState = GameState.INGAME;
+                       // currentState = GameState.INGAME;
                     }
                     break;
                 case GameState.INGAME:
@@ -53,12 +66,29 @@ namespace MiniGames.KillingNurse
                     break;
                 case GameState.OUT_TIME:
                     {
+                        currentState = GameState.CUT_SCENE;
+                    }
+                    break;
+                case GameState.CUT_SCENE:
+                    {
+                        cutScene.gameObject.SetActive(true);
+                        progressBar.gameObject.SetActive(false);
+                        cutScene.Play();
+                        isWin = true;
                         currentState = GameState.GAME_OVER;
                     }
                     break;
                 case GameState.GAME_OVER:
                     {
-                        mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                        // mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                        if (isWin)
+                        {
+                            StartCoroutine(TimingToShowPopUp(5));
+                        }
+                        else
+                        {
+                            StartCoroutine(TimingToShowPopUp(0));
+                        }
                         currentState = GameState.WAITING;
                     }
                     break;
@@ -73,7 +103,7 @@ namespace MiniGames.KillingNurse
         {
             while (true)
             {
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(0.8f);
                 GameObject ob;
                 if (SpawnExPosion.Instance.GetPooledExposion() != null)
                 {
@@ -92,6 +122,20 @@ namespace MiniGames.KillingNurse
                
             }
 
+        }
+
+        IEnumerator TimingToStartGame(float time)
+        {
+            yield return new WaitForSeconds(time);
+            tutorial.SetActive(false);
+            UI.gameObject.SetActive(true);
+            currentState = GameState.INGAME;
+        }
+        IEnumerator TimingToShowPopUp(float time)
+        {
+            yield return new WaitForSeconds(time);
+            mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+            Debug.Log("ShowPopUp");
         }
     }
 

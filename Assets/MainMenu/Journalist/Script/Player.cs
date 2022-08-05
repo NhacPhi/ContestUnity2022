@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     public GameObject ninja;
     public float speed;
 
-    private Animator animatorCat;
+    //private Animator animatorCat;
     private Animator animatorNinja;
     private Animator animatorExplosion;
 
@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        animatorCat = cat.gameObject.GetComponent<Animator>();
+        //animatorCat = cat.gameObject.GetComponent<Animator>();
         animatorNinja = ninja.GetComponent<Animator>();
         animatorExplosion = explosion.GetComponent<Animator>();
         isRun = true;
@@ -83,7 +83,7 @@ public class Player : MonoBehaviour
     {
         if(collision.gameObject.tag == "FinishGame")
         {
-            JournalistGame.Instance.currentState = GameState.GAME_OVER;
+            JournalistGame.Instance.currentState = GameState.CUT_SCENE;
         }
     }
 }
