@@ -41,6 +41,9 @@ namespace MiniGames.Mine
         [SerializeField]
         private int numberSquare;
 
+        [SerializeField]
+        private GameObject bgEndGame;
+
         //[SerializeField]
         //private Canvas UI;
         private void Awake()
@@ -52,7 +55,7 @@ namespace MiniGames.Mine
             isChooseCorrect = true;
             isCanSelect = true;
             randomList = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
-            listIndexs = new List<int>() { 0, 0, 0, 0 , 0};
+            listIndexs = new List<int>() { 0, 0, 0, 0 , 0, 0};
             SetRandomValueOfListIndex();
             mainMenu = GameObject.Find("@MainMenuGame");
             currentState = GameState.START;
@@ -104,7 +107,7 @@ namespace MiniGames.Mine
                         }
                         else
                         {
-                            StartCoroutine(TimingToShowPopUp(0));
+                            StartCoroutine(TimingToShowPopUp(1f));
                         }
                         currentState = GameState.WAITING;
                     }
@@ -183,7 +186,9 @@ namespace MiniGames.Mine
         IEnumerator TimingToShowPopUp(float time)
         {
             yield return new WaitForSeconds(time);
+            bgEndGame.SetActive(true);
             mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+            cutScene.gameObject.SetActive(false);
             Debug.Log("ShowPopUp");
         }
         IEnumerator TimingToStartGame(float time)

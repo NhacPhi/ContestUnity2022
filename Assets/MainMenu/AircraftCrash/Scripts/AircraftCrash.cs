@@ -89,7 +89,7 @@ public class AircraftCrash : MonoBehaviour
                     }
                     else
                     {
-                        StartCoroutine(TimingToShowPopUp(0));
+                        StartCoroutine(TimingToShowPopUp(1));
                     }
                     currentState = GameState.WAITING;
                 }
@@ -103,11 +103,12 @@ public class AircraftCrash : MonoBehaviour
     }
     IEnumerator TimingToShowPopUp(float time)
     {
-        yield return new WaitForSeconds(time);
         UI.gameObject.SetActive(false);
-        mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
-        Debug.Log("ShowPopUp");
+        yield return new WaitForSeconds(time);
         bgEndGame.SetActive(true);
+        mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+        cutScene.gameObject.SetActive(false);
+        Debug.Log("ShowPopUp");
     }
     IEnumerator TimingToStartGame(float time)
     {

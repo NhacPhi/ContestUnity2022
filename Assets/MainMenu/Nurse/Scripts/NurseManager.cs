@@ -22,7 +22,7 @@ public class NurseManager : MonoBehaviour
 
     private List<int> numbers = new List<int> () { 0, 1, 2, 3, 4, 5, 6 };
 
-    private GameState currentState;
+    public GameState currentState;
 
     bool isWin;
 
@@ -31,6 +31,9 @@ public class NurseManager : MonoBehaviour
 
     [SerializeField]
     private Canvas UI;
+
+    [SerializeField]
+    private GameObject bgEndGame;
     private void Awake()
     {
         Instance = this;
@@ -102,7 +105,7 @@ public class NurseManager : MonoBehaviour
                     }
                     else
                     {
-                        StartCoroutine(TimingToShowPopUp(0));
+                        StartCoroutine(TimingToShowPopUp(1));
                     }
                     currentState = GameState.WAITING;
                 }
@@ -117,7 +120,9 @@ public class NurseManager : MonoBehaviour
     }
     IEnumerator TimingToShowPopUp(float time)
     {
+        UI.gameObject.SetActive(false);
         yield return new WaitForSeconds(time);
+        bgEndGame.SetActive(true);
         mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
         Debug.Log("ShowPopUp");
     }

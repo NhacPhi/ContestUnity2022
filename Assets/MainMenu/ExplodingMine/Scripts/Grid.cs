@@ -34,8 +34,8 @@ namespace MiniGames.ExplodingMine
         [SerializeField]
         private PlayerMovement player;
 
-        [SerializeField]
-        private Sprite destinationImage;
+        //[SerializeField]
+        //private Sprite destinationImage;
 
 
         private int topSquareIndex;
@@ -61,7 +61,6 @@ namespace MiniGames.ExplodingMine
                 new List<int>{0, 1, 2, 6, 10, 11, 15},
                 new List<int>{0, 1, 5, 9, 10, 14, 15},
                 new List<int>{0, 4, 8, 9, 10, 11, 15},
-                new List<int>{0, 4, 5, 6, 2, 3, 7, 11, 15}
             };
             randomNumber = Random.Range(0, listArray.Count);
             listSquarePath = listArray[randomNumber];
@@ -119,7 +118,7 @@ namespace MiniGames.ExplodingMine
                 }
             }
             gridSquares[0].gameObject.GetComponent<GridSquare>().activeImage.gameObject.SetActive(true);
-            gridSquares[gridSquares.Count - 1].gameObject.GetComponent<GridSquare>().destinationImage.gameObject.GetComponent<Image>().sprite = destinationImage;
+            //gridSquares[gridSquares.Count - 1].gameObject.GetComponent<GridSquare>().normalImage.gameObject.GetComponent<Image>().sprite = destinationImage;
             gridSquares[gridSquares.Count - 1].gameObject.GetComponent<GridSquare>().SetDestinationImage();
         }
 
@@ -232,7 +231,7 @@ namespace MiniGames.ExplodingMine
 
         IEnumerator WaiteToShowPath()
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(2f);
             foreach(var index in listArray[randomNumber])
             {
                 gridSquares[index].GetComponent<GridSquare>().preditionImage.gameObject.SetActive(true);

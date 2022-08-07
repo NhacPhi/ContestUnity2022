@@ -24,7 +24,7 @@ public class Bot : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         currentTime += Time.deltaTime;
         if(currentTime > milstoneTime)
@@ -56,15 +56,15 @@ public class Bot : MonoBehaviour
     }
     void LookForPlayer()
     {
+        isLookForPlayer = true;
         turnBack.gameObject.SetActive(false);
         lookFor.gameObject.SetActive(true);
-        isLookForPlayer = true;
     }
     void TurnBack()
     {
+        isLookForPlayer = false;
         turnBack.gameObject.SetActive(true);
         lookFor.gameObject.SetActive(false);
-        isLookForPlayer = false;
     }
     void RedMoonTurnOn(float alpha)
     {

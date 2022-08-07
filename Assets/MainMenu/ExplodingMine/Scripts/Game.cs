@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 namespace MiniGames.ExplodingMine
 {
@@ -28,6 +29,20 @@ namespace MiniGames.ExplodingMine
         private ProgressBar progressBar;
 
         public GameObject mainMenu;
+
+        [SerializeField]
+        private GameObject tutorialGame;
+
+        [SerializeField]
+        private VideoPlayer cutScene;
+
+        [SerializeField]
+        private GameObject rawContent;
+
+        [SerializeField]
+        private GameObject bgEndGame;
+
+        bool isWin;
         private void Awake()
         {
             Instance = this;
@@ -39,12 +54,14 @@ namespace MiniGames.ExplodingMine
             //isGameOver = false;
             isChooseCorrect = true;
             //startGame = false;
-
+            isWin = false;
             level = Level.EASY;
 
             currentState = GameState.START;
 
             mainMenu = GameObject.Find("@MainMenuGame");
+
+            StartCoroutine(TimingToStartGame(1.5f));
         }
 
         // Update is called once per frame
@@ -71,9 +88,27 @@ namespace MiniGames.ExplodingMine
                         currentState = GameState.GAME_OVER;
                     }
                     break;
+                case GameState.CUT_SCENE:
+                    {
+                        //cutScene.gameObject.SetActive(true);
+                        rawContent.SetActive(true);
+                        progressBar.gameObject.SetActive(false);
+                        cutScene.Play();
+                        isWin = true;
+                        currentState = GameState.GAME_OVER;
+                    }
+                    break;
                 case GameState.GAME_OVER:
                     {
-                        mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                        //mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+                        if (isWin)
+                        {
+                            StartCoroutine(TimingToShowPopUp(5));
+                        }
+                        else
+                        {
+                            StartCoroutine(TimingToShowPopUp(1));
+                        }
                         currentState = GameState.WAITING;
                     }
                     break;
@@ -98,7 +133,7 @@ namespace MiniGames.ExplodingMine
         void GameWon()
         {
             //StartCoroutine(WinGameTimeWaitToFishPaht(popupGameWon));
-            currentState = GameState.GAME_OVER;
+            currentState = GameState.CUT_SCENE;
         }
 
         public IEnumerator WinGameTimeWaitToFishPath(GameObject ob)
@@ -106,6 +141,25 @@ namespace MiniGames.ExplodingMine
             yield return new WaitForSeconds(1);
             ob.gameObject.SetActive(true);
         }
+        IEnumerator TimingToStartGame(float time)
+        {
+            yield return new WaitForSeconds(time);
+            tutorialGame.SetActive(false);
+            //UI.gameObject.SetActive(true);
+            currentState = GameState.INGAME;
+        }
+        IEnumerator TimingToShowPopUp(float time)
+        {
+            //.gameObject.SetActive(false);
+            yield return new WaitForSeconds(time);
+            bgEndGame.SetActive(true);
+            mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+            cutScene.gameObject.SetActive(false);
+            rawContent.SetActive(false);
+            Debug.Log("ShowPopUp");
+        }
     }
+
+
 }
 

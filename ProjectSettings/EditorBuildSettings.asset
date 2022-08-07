@@ -17,7 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/MainMenu/AircraftCrash/Scene/AircraftCrash.unity
     guid: cf098ee61eaef1b478da32538b5466ff
-  - enabled: 1
+  - enabled: 0
     path: Assets/MainMenu/ExplodingBuilding/Scene/ExplodingBuilding.unity
     guid: 124939f45b83fea42bdb0f77e3ad2cd9
   - enabled: 1

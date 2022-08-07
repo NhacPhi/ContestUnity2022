@@ -8,8 +8,8 @@ public class JournalistGame : MonoBehaviour
     public static JournalistGame Instance { set; get; }
     public GameObject mainMenu;
 
-    [SerializeField]
-    private ProgressBar progressBar;
+    //[SerializeField]
+    //private ProgressBar progressBar;
 
     [SerializeField]
     public Bot bot;
@@ -33,6 +33,9 @@ public class JournalistGame : MonoBehaviour
 
     [SerializeField]
     private Canvas UI;
+
+    [SerializeField]
+    private GameObject bgEndGame;
 
     private void Awake()
     {
@@ -61,22 +64,22 @@ public class JournalistGame : MonoBehaviour
                 break;
             case GameState.INGAME:
                 {
-                    if (progressBar.isOutTime)
-                    {
-                        currentState = GameState.OUT_TIME;
-                    }
+                    //if (progressBar.isOutTime)
+                    //{
+                    //    currentState = GameState.OUT_TIME;
+                    //}
                 }
                 break;
             case GameState.OUT_TIME:
                 {
-                    mainMenu.GetComponent<MainMenuManager>().DecreaseHealth();
-                    currentState = GameState.GAME_OVER;
+                    //mainMenu.GetComponent<MainMenuManager>().DecreaseHealth();
+                    //currentState = GameState.GAME_OVER;
                 }
                 break;
             case GameState.CUT_SCENE:
                 {
                     cutScene.gameObject.SetActive(true);
-                    progressBar.gameObject.SetActive(false);
+                    //progressBar.gameObject.SetActive(false);
                     cutScene.Play();
                     isWin = true;
                     currentState = GameState.GAME_OVER;
@@ -92,7 +95,8 @@ public class JournalistGame : MonoBehaviour
                     }
                     else
                     {
-                        StartCoroutine(TimingToShowPopUp(0));
+                        StartCoroutine(TimingToShowPopUp(1));
+                        //Time.timeScale = 0;
                     }
                     currentState = GameState.WAITING;
                 }
@@ -107,8 +111,11 @@ public class JournalistGame : MonoBehaviour
     }
     IEnumerator TimingToShowPopUp(float time)
     {
+        UI.gameObject.SetActive(false);
         yield return new WaitForSeconds(time);
+        bgEndGame.SetActive(true);
         mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+        cutScene.gameObject.SetActive(false);
         Debug.Log("ShowPopUp");
     }
     IEnumerator TimingToStartGame(float time)
@@ -116,6 +123,6 @@ public class JournalistGame : MonoBehaviour
         yield return new WaitForSeconds(time);
         tutorial.SetActive(false);
         UI.gameObject.SetActive(true);
-    currentState = GameState.INGAME;
+        currentState = GameState.INGAME;
     }
 }

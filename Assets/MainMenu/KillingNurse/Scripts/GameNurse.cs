@@ -29,6 +29,9 @@ namespace MiniGames.KillingNurse
 
         public bool isWin;
 
+        [SerializeField]
+        private GameObject bgEndGame;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -87,7 +90,7 @@ namespace MiniGames.KillingNurse
                         }
                         else
                         {
-                            StartCoroutine(TimingToShowPopUp(0));
+                            StartCoroutine(TimingToShowPopUp(1));
                         }
                         currentState = GameState.WAITING;
                     }
@@ -101,9 +104,10 @@ namespace MiniGames.KillingNurse
         }
         IEnumerator WaitTimeToSpawnExposion()
         {
+            yield return new WaitForSeconds(1.5f);
             while (true)
             {
-                yield return new WaitForSeconds(0.8f);
+                yield return new WaitForSeconds(0.5f);
                 GameObject ob;
                 if (SpawnExPosion.Instance.GetPooledExposion() != null)
                 {
@@ -133,8 +137,11 @@ namespace MiniGames.KillingNurse
         }
         IEnumerator TimingToShowPopUp(float time)
         {
+            UI.gameObject.SetActive(false);
             yield return new WaitForSeconds(time);
+            bgEndGame.SetActive(true);
             mainMenu.GetComponent<MainMenuManager>().ShowPopupHealth();
+            cutScene.gameObject.SetActive(false);
             Debug.Log("ShowPopUp");
         }
     }

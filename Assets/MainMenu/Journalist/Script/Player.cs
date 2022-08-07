@@ -27,38 +27,47 @@ public class Player : MonoBehaviour
         animatorNinja = ninja.GetComponent<Animator>();
         animatorExplosion = explosion.GetComponent<Animator>();
         isRun = true;
-        animatorNinja.SetBool("isRuning", true);
+        //animatorNinja.SetBool("isWalking", true);
         type = Type.HUMAN;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+       
+        if (JournalistGame.Instance.currentState == GameState.WAITING)
         {
-            if(type == Type.HUMAN)
+            Debug.Log("Animation false");
+            animatorNinja.SetBool("isWalking", false);
+        }
+        if (JournalistGame.Instance.currentState == GameState.INGAME)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                ninja.gameObject.SetActive(false);
-                explosion.gameObject.SetActive(true);
-                animatorExplosion.SetTrigger("Explose");
-                StartCoroutine(TimingToChange(cat));
-                isRun = false;
-                animatorNinja.SetBool("isRuning", false);
-                type = Type.CAT;
-            }
-            else
-            {
-                cat.gameObject.SetActive(false);
-                explosion.gameObject.SetActive(true);
-                animatorExplosion.SetTrigger("Explose");
-                StartCoroutine(TimingToChange(ninja));
-                isRun = true;
-                type = Type.HUMAN;
-            }
+                if (type == Type.HUMAN)
+                {
+                    ninja.gameObject.SetActive(false);
+                    explosion.gameObject.SetActive(true);
+                    animatorExplosion.SetTrigger("Explose");
+                    StartCoroutine(TimingToChange(cat));
+                    isRun = false;
+                    // animatorNinja.SetBool("isRuning", false);
+                    type = Type.CAT;
+                }
+                else
+                {
+                    cat.gameObject.SetActive(false);
+                    explosion.gameObject.SetActive(true);
+                    animatorExplosion.SetTrigger("Explose");
+                    StartCoroutine(TimingToChange(ninja));
+                    isRun = true;
+                    type = Type.HUMAN;
+                }
 
+            }
+            PlayerMovement();
         }
 
-        PlayerMovement(); 
     }
 
     IEnumerator TimingToChange(GameObject ob)

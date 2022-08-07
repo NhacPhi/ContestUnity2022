@@ -77,13 +77,17 @@ public class Geometry : MonoBehaviour
     }
     void MoveGeometry()
     {
-        if(mouseDown && moveable)
+        if(NurseManager.Instance.currentState == GameState.INGAME)
         {
-            float widthMouse = Input.mousePosition.x;
-            float heighMouse = Input.mousePosition.y;
+            if (mouseDown && moveable)
+            {
+                float widthMouse = Input.mousePosition.x;
+                float heighMouse = Input.mousePosition.y;
 
-            transform.position = Camera.main.ScreenToWorldPoint(new Vector3(widthMouse, heighMouse, 1));
+                transform.position = Camera.main.ScreenToWorldPoint(new Vector3(widthMouse, heighMouse, 1));
+            }
         }
+
     }
 
 }

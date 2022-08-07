@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,6 +21,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private PopupEndFGame popup;
+
+    [SerializeField]
+    private AudioManager audioManager;
 
     public bool isWin;
     private void Awake()
@@ -49,12 +53,12 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.INGAME:
                 {
-                    //currentState = GameState.INGAME;
+                    currentState = GameState.INGAME;
                 }
                 break;
             case GameState.GAME_OVER:
                 {
-                    if(isWin)
+                    if (isWin)
                     {
                         currentState = GameState.CUT_SCENE;
                     }
@@ -62,6 +66,7 @@ public class GameManager : MonoBehaviour
                     {
                         currentState = GameState.WAITING;
                     }
+                    //currentState = GameState.WAITING;
                 }
                 break;
             case GameState.CUT_SCENE:
@@ -72,9 +77,11 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.WAITING:
                 {
-                    
+                    Debug.Log("Destroy Object");
                     Destroy(mainMenu);
                     Destroy(healthManger);
+                    Destroy(audioManager.gameObject);
+                    Destroy(popup.gameObject);
                     Destroy(this.gameObject);
                 }
                 break;
